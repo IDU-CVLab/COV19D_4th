@@ -95,7 +95,7 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 
 best_val_accuracy = 0.0  # Variable to track the best validation accuracy
-best_model_path = '/home/idu/Desktop/COV19D/ChatGPT-saved-models/ViT-model.pt'  # Path to save the best model
+best_model_path = '/home/idu/Desktop/COV19D/ChatGPT-saved-models/SwinT-model.pt'  # Path to save the best model
 
 num_epochs = 30 # Only for evaluating the model performance
 
