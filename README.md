@@ -1,5 +1,5 @@
 # DataBase
-COV19-CT Database shared in the third run of the competition.
+(COV19-CT Database)[https://mlearn.lincoln.ac.uk/icassp-2023-ai-mia/] shared in the third run of the competition.
 
 # Method
 Swin Trnasformer-based methodology (swin_base_patch4_window12_384).
