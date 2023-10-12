@@ -23,6 +23,10 @@ from torchvision import datasets, transforms
 import timm
 import sys
 
+import os
+from torchvision import transforms
+from PIL import Image
+
 import numpy as np
 import pandas as pd
 import glob
@@ -48,11 +52,11 @@ val_dir = '/home/idu/Desktop/COV19D/val-KD/'
 
 # Define hyperparameters
 learning_rate = 0.001
-num_epochs = 10
+num_epochs = 20
 batch_size = 32
 # Change input images shape to fit the transformer architecture
-img_height = 224  
-img_width = 224
+img_height = 384  
+img_width = 384
 
 num_classes = 2
 
@@ -75,12 +79,12 @@ val_loader = DataLoader(val_dataset, batch_size=batch_size)
 ### Choose a Transformer
 
 #### Swin Transformer model
-#model = timm.create_model('swin_base_patch4_window12_384', pretrained=True, num_classes=num_classes, in_chans=1)
+model = timm.create_model('swin_base_patch4_window12_384', pretrained=True, num_classes=num_classes, in_chans=1)
 #model = timm.create_model('swin_tiny', pretrained=True, num_classes=num_classes, in_chans=1)
 
 #### ViT model
-model = timm.create_model('vit_base_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
-model = timm.create_model('vit_small_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
+#model = timm.create_model('vit_base_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
+#model = timm.create_model('vit_small_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
 
 
 model.to(device)
@@ -93,7 +97,7 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 best_val_accuracy = 0.0  # Variable to track the best validation accuracy
 best_model_path = '/home/idu/Desktop/COV19D/ChatGPT-saved-models/ViT-model.pt'  # Path to save the best model
 
-num_epochs = 20 # Only for evaluating the model performance
+num_epochs = 30 # Only for evaluating the model performance
 
 counter = 1
 # Train the model
@@ -178,18 +182,20 @@ for epoch in range(num_epochs):
     #sys.stdout.flush()
     
 # Save the trained model
-torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model.pt")
+#torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model.pt")
+torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt")
 
  # save full model including architecture
-torch.save(model, "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model-full.pt")
+torch.save(model, "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt")
 
 
 ###### Loading the model
 
-import torch
+
 
 # Define the path to the saved model file
-model_path = "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model-full.pt"
+#model_path = "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model-full.pt"
+model_path = "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt"
 
 # Create an instance of the model class
 #model = model()
@@ -203,13 +209,10 @@ model.eval()
 
 ### Making Predictions
 
-import os
-import numpy as np
-import torch
-from torchvision import transforms
-from PIL import Image
+
 
 # Define the folder path containing the CT images
+folder_path = '/home/idu/Desktop/COV19D/val-KD/covid'
 folder_path = '/home/idu/Desktop/COV19D/val-KD/non-covid'
 
 covid_predictions = []
