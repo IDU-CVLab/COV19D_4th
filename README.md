@@ -11,5 +11,13 @@ torchvision==0.11.2+cu102
 timm==0.6.12  
 pil==8.3.1   
 
-
-
+# Citation
+If you find the this method useful, please consider citing:  
+@misc{morani2023covid19,  
+      title={COVID-19 Detection Using Swin Transformer Approach from Computed Tomography Images},  
+      author={Kenan Morani},  
+      year={2023},  
+      eprint={2310.08165},  
+      archivePrefix={arXiv},  
+      primaryClass={eess.IV}  
+}
