@@ -1,4 +1,4 @@
-[![DOI:10.48550/arXiv.2210.02992](http://img.shields.io/badge/DOI-10.48550/arXiv.2310.08165-B31B1B.svg)](https://doi.org/10.48550/arXiv.2310.08165)
+[![DOI:10.48550/arXiv.2210.02992](http://img.shields.io/badge/DOI-10.48550/arXiv.2310.08165-B31B1B.svg)](https://doi.org/10.48550/arXiv.2310.08165)  
 This approach reaches 94.74% accuracy on the validation set at patient level, and 0.95 Macro F1 score.  
 
 # DataBase
