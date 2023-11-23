@@ -30,15 +30,6 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 import glob
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras import layers, models
-from sklearn.utils import compute_class_weight
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-import os
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from tensorflow.keras.utils import Sequence, to_categorical
 import matplotlib.pyplot as plt
 
 # Set device
@@ -52,12 +43,13 @@ val_dir = '/home/idu/Desktop/COV19D/val-KD/'
 
 # Define hyperparameters
 learning_rate = 0.001
-num_epochs = 20
+num_epochs = 10
 batch_size = 32
 # Change input images shape to fit the transformer architecture
 img_height = 384  
 img_width = 384
 
+#img_height = img_width = 224
 num_classes = 2
 
 # Define transformations for the images
@@ -82,6 +74,8 @@ val_loader = DataLoader(val_dataset, batch_size=batch_size)
 model = timm.create_model('swin_base_patch4_window12_384', pretrained=True, num_classes=num_classes, in_chans=1)
 #model = timm.create_model('swin_tiny', pretrained=True, num_classes=num_classes, in_chans=1)
 
+#model.head.in_features = 1  # Change this if your input has a different number of channels
+
 #### ViT model
 #model = timm.create_model('vit_base_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
 #model = timm.create_model('vit_small_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
@@ -95,9 +89,18 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 
 best_val_accuracy = 0.0  # Variable to track the best validation accuracy
-best_model_path = '/home/idu/Desktop/COV19D/ChatGPT-saved-models/SwinT-model.pt'  # Path to save the best model
+best_model_path = '/home/idu/Desktop/COV19D/saved-models/Transformers/SwinT-model.pt'  # Path to save the best model
 
-num_epochs = 30 # Only for evaluating the model performance
+# Checking class labels matching the classes
+for images, labels in train_loader:
+    print(labels)
+    break
+
+for images, labels in val_loader:
+    print(labels)
+    break
+
+
 
 counter = 1
 # Train the model
@@ -170,6 +173,9 @@ for epoch in range(num_epochs):
     # Calculate precision and recall
     precision = precision_score(true_labels, predicted_labels, average=None)
     recall = recall_score(true_labels, predicted_labels, average=None)
+    precision_micro = precision_score(true_labels, predicted_labels, average='micro')
+    recall_micro = recall_score(true_labels, predicted_labels, average='micro')
+
     
     #if val_accuracy > best_val_accuracy:
         # Update the best validation accuracy and save the model
@@ -178,29 +184,37 @@ for epoch in range(num_epochs):
 
     print(f"Validation Loss: {avg_val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}")
     print("Validation Precision:", precision)
+    print("Validation micro Precision:", precision_micro)
     print("Validation Recall:", recall)
-    #sys.stdout.flush()
+    print("Validationmicro  Recall:", recall_micro)
     
-# Save the trained model
-#torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model.pt")
-torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt")
 
- # save full model including architecture
-torch.save(model, "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt")
+
+
+# Save the trained model fully
+#torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model.pt")
+
+
+# save full model including architecture
+#torch.save(model, "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt")
 
 
 ###### Loading the model
 
-
-
 # Define the path to the saved model file
-#model_path = "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model-full.pt"
-model_path = "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt"
+model_path = "/home/idu/Desktop/COV19D/saved-models/Transformers/ViT-model.pt"
 
 # Create an instance of the model class
 #model = model()
 
+
 # Load the saved model parameters
+    
+# Load the saved model weights
+
+## Load From model Architecture
+model.load_state_dict(torch.load(model_path))
+## Load from full saved model
 model= torch.load(model_path)
 
 # Set the model to evaluation mode
@@ -212,13 +226,24 @@ model.eval()
 
 
 # Define the folder path containing the CT images
+#folder_path = '/home/idu/Desktop/COV19D/val-KD/covid'
 folder_path = '/home/idu/Desktop/COV19D/val-KD/covid'
-folder_path = '/home/idu/Desktop/COV19D/val-KD/non-covid'
 
 covid_predictions = []
 noncovid_predictions = []
+
 covid_folder_counts = []
 noncovid_folder_counts = []
+
+covid_folder_counts_fourty = []
+noncovid_folder_counts_fourty = []
+
+covid_folder_counts_twenty = []
+noncovid_folder_counts_twenty = []
+
+covid_folder_counts_five = []
+noncovid_folder_counts_five = []
+
 
 
 # Iterate through the image files
@@ -235,28 +260,62 @@ for fldr in os.listdir(folder_path):
         # Pass the image through the model to get predictions
         with torch.no_grad():
             output = model(img)
+            
+        # Print the model's output
+        #print("Model Output:", output)
 
         # Interpret the model's output to make predictions
         _, predicted_class = output.max(1)
-
+        #print('predicted class', predicted_class)
+        
         # Append the prediction to the corresponding list
         if predicted_class == 0:
-            covid_predictions.append(file_path)
+            covid_predictions.append(0)
         else:
-            noncovid_predictions.append(file_path)
+            noncovid_predictions.append(0)
         # Append the count of predicted COVID-19 slices and non-COVID slices for this folder
+        
+        
     if len(covid_predictions) > len(noncovid_predictions):
+     print('COVID patinet')
      covid_folder_counts.append(file_path)
     else:
      noncovid_folder_counts.append(file_path)
+     print('non-COVID patient')
+     
+    if len(covid_predictions) > 0.4 * len(noncovid_predictions):
+      covid_folder_counts_fourty.append(file_path)
+    else:
+      noncovid_folder_counts_fourty.append(file_path)
+      
+    if len(covid_predictions) > 0.2 * len(noncovid_predictions):
+      covid_folder_counts_twenty.append(file_path)
+    else:
+      noncovid_folder_counts_twenty.append(file_path)
+      
+    if len(covid_predictions) > 0.05 * len(noncovid_predictions):
+      covid_folder_counts_five.append(file_path)
+    else:
+      noncovid_folder_counts_five.append(file_path)
 
     # Create empty lists to store the counts of predicted COVID-19 and non-COVID CT folders
-    #covid_folder_counts = []
-    #noncovid_folder_counts = []
+    covid_predictions = []
+    noncovid_predictions = []
+    
+   
 
 # Print the lists of CT folder counts (COVID-19 and non-COVID)
-print("List of COVID-19 Folder Counts:", covid_folder_counts)
-print("List of Non-COVID Folder Counts:", noncovid_folder_counts)
+#print("List of COVID-19 Folder Counts:", covid_folder_counts)
+#print("List of Non-COVID Folder Counts:", noncovid_folder_counts)
 
 print("Length of COVID-19 Folder Counts:", len(covid_folder_counts))
 print("Length of Non-COVID Folder Counts:", len(noncovid_folder_counts))
+
+print("Length of COVID-19 Folder Counts 40%:", len(covid_folder_counts_fourty))
+print("Length of Non-COVID Folder Counts40% :", len(noncovid_folder_counts_fourty))
+
+print("Length of COVID-19 Folder Counts 20%:", len(covid_folder_counts_twenty))
+print("Length of Non-COVID Folder Counts 20%:", len(noncovid_folder_counts_twenty))
+
+print("Length of COVID-19 Folder Counts 5%:", len(covid_folder_counts_five))
+print("Length of Non-COVID Folder Counts 5%:", len(noncovid_folder_counts_five))
