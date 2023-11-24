@@ -49,7 +49,7 @@ batch_size = 32
 img_height = 384  
 img_width = 384
 
-#img_height = img_width = 224
+img_height = img_width = 224
 num_classes = 2
 
 # Define transformations for the images
@@ -77,7 +77,7 @@ model = timm.create_model('swin_base_patch4_window12_384', pretrained=True, num_
 #model.head.in_features = 1  # Change this if your input has a different number of channels
 
 #### ViT model
-#model = timm.create_model('vit_base_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
+model = timm.create_model('vit_base_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
 #model = timm.create_model('vit_small_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
 
 
@@ -101,6 +101,8 @@ for images, labels in val_loader:
     break
 
 
+class_order = val_dataset.class_to_idx
+print("Class Order:", class_order)
 
 counter = 1
 # Train the model
@@ -202,7 +204,7 @@ for epoch in range(num_epochs):
 ###### Loading the model
 
 # Define the path to the saved model file
-model_path = "/home/idu/Desktop/COV19D/saved-models/Transformers/ViT-model.pt"
+model_path = "/home/idu/Desktop/COV19D/saved-models/Transformers/vit_base_patch16_224.pt"
 
 # Create an instance of the model class
 #model = model()
@@ -215,7 +217,7 @@ model_path = "/home/idu/Desktop/COV19D/saved-models/Transformers/ViT-model.pt"
 ## Load From model Architecture
 model.load_state_dict(torch.load(model_path))
 ## Load from full saved model
-model= torch.load(model_path)
+#model= torch.load(model_path)
 
 # Set the model to evaluation mode
 model.eval()
