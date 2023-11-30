@@ -7,9 +7,117 @@ Original file is located at
     https://colab.research.google.com/drive/1kmmVezctjZQYWtl1Qjxdwwq41MUDrOrD
 """
 
-#from google.colab import drive
-#drive.mount('/content/gdrive', force_remount=True)
 
+######################## Images Processing #######################
+#######################################################################################
+
+
+### Slices Deletion
+import os
+import cv2
+import re
+
+# Define path of images to be processed
+train_dir = '/home/idu/Desktop/COV19D/train-processed/covid/'
+val_dir = '/home/idu/Desktop/COV19D/val-processed/val/non-covid/'
+
+main_dir = train_dir
+
+# Define the percentage of images to delete
+percentage_to_delete = 40  # Adjust this value as needed
+
+# Function to calculate the number of images to delete
+def calculate_images_to_delete(total_count):
+    images_to_delete = int((percentage_to_delete / 100) * total_count)
+    return images_to_delete
+
+# Function to extract the image number from the filename
+def extract_image_number(filename):
+    match = re.match(r"(\d+).jpg", filename)
+    if match:
+        return int(match.group(1))
+    return None
+
+# Process each subfolder in the main directory
+
+for subfolder in os.listdir(main_dir):
+    subfolder_path = os.path.join(main_dir, subfolder)
+    
+    if os.path.isdir(subfolder_path):
+        # List all files in the subfolder
+        files = os.listdir(subfolder_path)
+        files.sort(key=lambda x: extract_image_number(x))  # Sort files by image number
+        
+        total_count = len(files)
+        
+        if total_count > 1:
+            images_to_delete = calculate_images_to_delete(total_count)
+            
+            print(f"Processing subfolder: {subfolder}")
+            
+            # Print the list of files before deletion
+            print("Files before deletion:", files)
+            
+            # Delete a percentage of images, keeping centered ones
+            for i in range(images_to_delete):
+                # Delete images at the beginning and end
+                file_to_delete_first = os.path.join(subfolder_path, files[i])
+                file_to_delete_last = os.path.join(subfolder_path, files[-(i + 1)])
+                print(f"Deleting image: {file_to_delete_first}")
+                print(f"Deleting image: {file_to_delete_last}")
+                os.remove(file_to_delete_first)
+                os.remove(file_to_delete_last)
+            
+            # Print the list of files after deletion
+            files_after_deletion = os.listdir(subfolder_path)
+            print("Files after deletion:", files_after_deletion)
+
+print("Deletion process completed.")
+
+
+### Slices Cropping
+
+#path for images to be processed
+folder_path = val_dir
+
+# Specify the new size and cropping position
+new_height = 227
+new_width = 300
+crop_x = 99
+crop_y = 160
+
+for sub_folder in os.listdir(folder_path):
+    sub_folder_path = os.path.join(folder_path, sub_folder)
+    
+    print(f'Processing subfolder: {sub_folder}')
+    
+    for file_name in os.listdir(sub_folder_path):
+        file_path = os.path.join(sub_folder_path, file_name)
+        
+        # Check if the file is an image (you can add more image extensions if needed)
+        if file_name.lower().endswith(('.png', '.jpg', '.jpeg')):
+            #print(f'Processing file: {file_name}')
+            
+            img = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)  # Load the image in grayscale
+            
+            # Check if the image was loaded successfully
+            if img is not None:
+                # Crop the image
+                img_cropped = img[crop_y:crop_y+new_height, crop_x:crop_x+new_width]
+                
+                # Save the cropped image by overwriting the original image
+                cv2.imwrite(file_path, img_cropped)
+                
+                #print(f'Cropped and saved: {file_name}')
+            else:
+                print(f'Failed to load image: {file_name}')
+
+print('finished')
+
+
+######################## Swin Transformers for classification########################
+#####################################################################################
+#######################################################################################3
 #!pip install swin_transformer
 
 #!pip install timm
@@ -23,10 +131,7 @@ from torchvision import datasets, transforms
 import timm
 import sys
 
-import os
 from torchvision import transforms
-from PIL import Image
-
 import numpy as np
 import pandas as pd
 import glob
@@ -37,8 +142,8 @@ device = torch.device("cpu")
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Set paths
-train_dir = '/home/idu/Desktop/COV19D/train-KD/'
-val_dir = '/home/idu/Desktop/COV19D/val-KD/'
+train_dir = '/home/idu/Desktop/COV19D/train-processed/'
+val_dir = '/home/idu/Desktop/COV19D/val-processed/val/'
 
 
 # Define hyperparameters
@@ -49,7 +154,7 @@ batch_size = 32
 img_height = 384  
 img_width = 384
 
-img_height = img_width = 224
+#img_height = img_width = 224
 num_classes = 2
 
 # Define transformations for the images
@@ -72,12 +177,14 @@ val_loader = DataLoader(val_dataset, batch_size=batch_size)
 
 #### Swin Transformer model
 model = timm.create_model('swin_base_patch4_window12_384', pretrained=True, num_classes=num_classes, in_chans=1)
+#model = timm.create_model('swin_small_patch4_window7_224', pretrained=True, num_classes=num_classes, in_chans=1)
+
 #model = timm.create_model('swin_tiny', pretrained=True, num_classes=num_classes, in_chans=1)
 
 #model.head.in_features = 1  # Change this if your input has a different number of channels
 
 #### ViT model
-model = timm.create_model('vit_base_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
+#model = timm.create_model('vit_base_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
 #model = timm.create_model('vit_small_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
 
 
@@ -89,7 +196,9 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 
 best_val_accuracy = 0.0  # Variable to track the best validation accuracy
-best_model_path = '/home/idu/Desktop/COV19D/saved-models/Transformers/SwinT-model.pt'  # Path to save the best model
+best_model_path = '/home/idu/Desktop/COV19D/saved-models/Transformers/imageprocess-swin_base_patch4_window12_384.pt'  # Path to save the best model
+#best_model_path = '/home/idu/Desktop/COV19D/saved-models/Transformers/imageprocessedswin_small_patch4_window7_224.pt'  # Path to save the best model
+
 
 # Checking class labels matching the classes
 for images, labels in train_loader:
@@ -179,10 +288,10 @@ for epoch in range(num_epochs):
     recall_micro = recall_score(true_labels, predicted_labels, average='micro')
 
     
-    #if val_accuracy > best_val_accuracy:
+    if val_accuracy > best_val_accuracy:
         # Update the best validation accuracy and save the model
-    best_val_accuracy = val_accuracy
-    torch.save(model.state_dict(), best_model_path)
+     best_val_accuracy = val_accuracy
+     torch.save(model.state_dict(), best_model_path)
 
     print(f"Validation Loss: {avg_val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}")
     print("Validation Precision:", precision)
@@ -191,11 +300,8 @@ for epoch in range(num_epochs):
     print("Validationmicro  Recall:", recall_micro)
     
 
-
-
 # Save the trained model fully
 #torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model.pt")
-
 
 # save full model including architecture
 #torch.save(model, "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt")
@@ -208,7 +314,6 @@ model_path = "/home/idu/Desktop/COV19D/saved-models/Transformers/vit_base_patch1
 
 # Create an instance of the model class
 #model = model()
-
 
 # Load the saved model parameters
     
@@ -224,8 +329,6 @@ model.eval()
 
 
 ### Making Predictions
-
-
 
 # Define the folder path containing the CT images
 #folder_path = '/home/idu/Desktop/COV19D/val-KD/covid'
@@ -321,3 +424,6 @@ print("Length of Non-COVID Folder Counts 20%:", len(noncovid_folder_counts_twent
 
 print("Length of COVID-19 Folder Counts 5%:", len(covid_folder_counts_five))
 print("Length of Non-COVID Folder Counts 5%:", len(noncovid_folder_counts_five))
+
+
+######### BY KENAN MORANI
