@@ -6,7 +6,7 @@ COV19-CT Database was shared in the third run of the competition and can be obta
 # Method
 **First**, images were processed by deletion of nonrepresentative slcies in each CT scan, and Region of Interest (ROI) cropping of the slices.  
 **Second**, Vision Trnasformer-based methodology (swin_base_patch4_window12_384) was used to make diagnosis decisions for each slice.
-Third, different thresholds were test to make decisions at patinet level for each CT case.
+**Third**, different thresholds were test to make decisions at patinet level for each CT case.
 * Please note: This is a binary classification task. To replicate the method on multi-class classification data, you need to modify the model's output to suit your task.  
 * Please refer to the attached paper for more details on the methodology.
 
