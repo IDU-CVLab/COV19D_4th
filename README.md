@@ -4,9 +4,10 @@
 COV19-CT Database was shared in the third run of the competition and can be obtained from the workshop organizers at [https://mlearn.lincoln.ac.uk/icassp-2023-ai-mia/](https://mlearn.lincoln.ac.uk/icassp-2023-ai-mia/).
 
 # Method
-**First** images were processed by deletion of nonrepresentative slcies in each CT scan, and Region of Interest (ROI) cropping of the slices.  
-**Second** Vision Trnasformer-based methodology (swin_base_patch4_window12_384) was used to make diagnosis decisions for each slice.  
-**Third** different thresholds were tested to make decisions at the patient level for each CT case.
+This code can be deployed in either of two ways:
+Without CT Scan Images Processing (You may skip this step in the Code), or with images processing:
+**Image Processing Phase (Optional)** Images were processed by deletion of nonrepresentative slcies in each CT scan and region of interest (ROI) cropping of the slices.  
+**Vision Trnasformer for Slices Diagnosis** Vision Trnasformer-based methodology (swin_base_patch4_window12_384) was used to make diagnosis decisions at slices level. At patient level, different thresholds were tested to make final diagnostic decisions for each patinet.
 * Please note: This is a binary classification task. To replicate the method on multi-class classification data, you need to modify the model's output to suit your task.  
 * Please refer to the attached paper for more details on the methodology.
 
