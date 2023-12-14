@@ -18,7 +18,7 @@ pil==8.3.1
 
 # Citation
 If you find the this method useful, please consider citing:  
-@misc{morani2023covid19,  
+>@misc{morani2023covid19,  
       title={COVID-19 Detection Using Swin Transformer Approach from Computed Tomography Images},  
       author={Kenan Morani},  
       year={2023},  
