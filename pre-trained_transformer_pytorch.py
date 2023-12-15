@@ -108,7 +108,7 @@ for sub_folder in os.listdir(folder_path):
 print('finished')
 
 
-######################## Swin Transformers for classification########################
+######################## A transformer for classification########################
 #####################################################################################
 #######################################################################################3
 #!pip install swin_transformer
@@ -171,11 +171,9 @@ learning_rate = 0.001
 num_epochs = 10
 batch_size = 32
 # Change input images shape to fit the transformer architecture
-img_height = 384  
-img_width = 384
+img_height = img_width = 384
 #img_height = img_width = 224
 num_classes = 2
-
 
 # Define transformations for the images
 transform = transforms.Compose([
@@ -185,7 +183,6 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.5], std=[0.5])
 ])
 
-# Set paths
 # Set paths
 train_dir = '/home/idu/Desktop/COV19D/train-processed/'
 val_dir = '/home/idu/Desktop/COV19D/val-processed/val/'
@@ -203,17 +200,15 @@ device = torch.device("cpu")
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 ### Choose a Transformer
-
-#### Swin Transformer model
+## Swin Transformer model
 model = timm.create_model('swin_base_patch4_window12_384', pretrained=True, num_classes=num_classes, in_chans=1)
 #model = timm.create_model('swin_small_patch4_window7_224', pretrained=True, num_classes=num_classes, in_chans=1)
 #model = timm.create_model('swin_tiny', pretrained=True, num_classes=num_classes, in_chans=1)
 #model.head.in_features = 1  # Change this if your input has a different number of channels
-
-#### ViT model
+## ViT model
 #model = timm.create_model('vit_base_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
 #model = timm.create_model('vit_small_patch16_224', pretrained=True, num_classes=num_classes, in_chans=1)
-
+#model = timm.create_model('mobilevit_xxs', pretrained=True, num_classes=num_classes, in_chans=1)
 
 model.to(device)
 
@@ -249,7 +244,6 @@ for epoch in range(num_epochs):
     total_loss = 0.0
     total_correct = 0
     for images, labels in train_loader:
-        #print('2')
         images = images.to(device)
         labels = labels.to(device)
                 
@@ -269,15 +263,12 @@ for epoch in range(num_epochs):
         total_loss += loss.item() * images.size(0)
         _, predicted = torch.max(outputs, 1)
         total_correct += (predicted == labels).sum().item()
-        #print('6')
         #print(f'{counter} - 6')
         counter += 1
     # Calculate average loss and accuracy for the epoch
     avg_loss = total_loss / len(train_loader.dataset)
     accuracy = total_correct / len(train_loader.dataset)
-
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}, Accuracy: {accuracy:.4f}")
-    
     
     # Validation
     print('val starts')
@@ -327,13 +318,11 @@ for epoch in range(num_epochs):
     
 
 # Save the trained model fully
-#torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/ChatGPT-saved-models/KnowledgeDistillation-model.pt")
+#torch.save(model.state_dict(), "/home/idu/Desktop/COV19D/saved-models/transformer_Model.pt")
 # save full model including architecture
 #torch.save(model, "/home/idu/Desktop/COV19D/ChatGPT-saved-models/Swin-Transformer-model.pt")
 
-
-
-###### Loading the model
+#### Evaluating the Model
 
 # Define the path to the saved model file
 model_path = best_model_path
@@ -347,11 +336,10 @@ model.load_state_dict(torch.load(model_path))
 # Set the model to evaluation mode
 model.eval()
 
-### Making Predictions
-
+# Making Predictions
 # Define the folder path containing the CT images
-#folder_path = '/home/idu/Desktop/COV19D/val-KD/covid'
-folder_path = '/home/idu/Desktop/COV19D/val-processed/val/covid'
+#folder_path = '/home/idu/Desktop/COV19D/val-preprocessed/covid'
+folder_path = '/home/idu/Desktop/COV19D/train-processed/covid'
 
 covid_predictions = []
 noncovid_predictions = []
