@@ -11,8 +11,8 @@ This code can be deployed in either of two ways: without CT images processing (y
 * Please refer to the attached paper for more details on the methodology.
 
 # Dependencies
-torch==1.10.1+cu102  
-torchvision==0.11.2+cu102  
+torch==1.10.1
+torchvision==0.11.2
 timm==0.6.12  
 pil==8.3.1   
 
