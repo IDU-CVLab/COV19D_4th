@@ -5,7 +5,7 @@ COV19-CT Database was shared in the third run of the competition and can be obta
 
 # Method
 This code can be deployed in either of two ways: without CT images processing (you may skip this step in the code) or with images processing:  </br></br>
-**Images Processing (Optional).** Images were processed by deleting nonrepresentative slcies in each CT scan and cropping the Region Of Interest (ROI) cropping of the slices.  </br>  
+**Images Processing (Optional).** Images were processed by deleting nonrepresentative slcies in each CT scan and cropping the Region Of Interest (ROI) , i.e. the lung areas.  </br>  
 **Vision Trnasformer for Slices Diagnosis.** Vision Trnasformer-based methodology (swin_base_patch4_window12_384) was used to make diagnosis decisions at the slice level. At the patient level, different thresholds were tested to make final diagnostic decisions for each patient.  </br> </br> 
 * Please note: This is a binary classification task. To replicate the method on multi-class classification data, you need to modify the model's output to suit your task.  
 * Please refer to the attached paper for more details on the methodology.
