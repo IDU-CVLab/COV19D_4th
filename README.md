@@ -24,3 +24,5 @@ If you find the this method useful, please consider citing:
       archivePrefix={arXiv},  
       primaryClass={eess.IV}  
 }
+
+* Kindly inform the organization owner if you wish to obtain the pretrained model in this study
