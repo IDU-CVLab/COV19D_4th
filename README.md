@@ -7,7 +7,7 @@ This code can be deployed in either of two ways: without CT images processing (y
 **Vision Trnasformer for Slices Diagnosis.** Vision Trnasformer-based methodology (xxs mobile ViT Transformer) was used to make diagnosis decisions at the slice level. At the patient level, majority voting was used to make the final diagnostic decisions for each patient.  </br> </br> 
 * Please note: This is a binary classification task. To replicate the method on multi-class classification data, you need to modify the model's output to suit your task.  
 * Please refer to the attached paper for more details on the methodology.
-* * Kindly inform the organization owner if you wish to obtain the pretrained model in this study.  
+* Kindly inform the organization owner if you wish to obtain the pretrained model in this study.  
 
 # Dependencies
 torch==1.10.1  
