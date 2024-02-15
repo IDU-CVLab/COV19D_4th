@@ -1,5 +1,5 @@
 # DataBase
-COV19-CT Database was shared in the third run of the competition and can be obtained from the workshop organizers at [https://mlearn.lincoln.ac.uk/icassp-2023-ai-mia/](https://mlearn.lincoln.ac.uk/icassp-2023-ai-mia/).
+COV19-CT Database was shared in the forth run of the competition and can be obtained from the workshop organizers at [https://mlearn.lincoln.ac.uk/ai-mia-cov19d-competition/](https://mlearn.lincoln.ac.uk/ai-mia-cov19d-competition/).
 
 # Method
 This code can be deployed in either of two ways: without CT images processing (you may skip this step in the code) or with images processing:  </br></br>
