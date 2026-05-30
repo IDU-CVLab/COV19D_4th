@@ -16,7 +16,7 @@ timm==0.6.12
 pil==8.3.1   
 
 # Citation
-Accepted at the [SAI Computing Conferance, UK 2026:](https://saiconference.com/Computing)   </br>
+Accepted at the conferance proceedings of [SAI Computing Conferance, UK 2026:](https://saiconference.com/Computing)   </br>
 If you find the this method useful, please consider citing:  
 >@misc{morani2023covid19,  
       title={COVID-19 Detection Using Swin Transformer Approach from Computed Tomography Images},  
