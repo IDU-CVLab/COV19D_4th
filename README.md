@@ -27,3 +27,4 @@ If you find the this method useful, please consider citing:
       primaryClass={eess.IV}  
 }
 
+Presentation is at [SAI Computing Conferance presentation Agenda, UK 2026:](https://www.youtube.com/watch?v=3j-to3l1jQw)
