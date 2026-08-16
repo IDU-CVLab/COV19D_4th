@@ -1,4 +1,4 @@
-[![DOI:10.26555/ijain.V9i3.1432.2023.2219765](http://img.shields.io/badge/DOI-10.1007/978-3-032-24810-7_2.svg)](https://doi.org/10.1007/978-3-032-24810-7_2)
+[![DOI:10.26555/ijain.V9i3.1432.2023.2219765](http://img.shields.io/badge/DOI-10.26555/21681163-B31B1B.svg)](https://doi.org/10.1007/978-3-032-24810-7_2)
 
 # DataBase
 COV19-CT Database was shared in the forth run of the competition and can be obtained from the workshop organizers at [https://mlearn.lincoln.ac.uk/ai-mia-cov19d-competition/](https://mlearn.lincoln.ac.uk/ai-mia-cov19d-competition/).
