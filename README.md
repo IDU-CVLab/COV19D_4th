@@ -32,6 +32,4 @@ booktitle="Intelligent Computing",
 year="2026",
 publisher="Springer Nature Switzerland",
 address="Cham",
-pages="19--31"  
-
-https://doi.org/10.1007/978-3-032-24810-7_2
+pages="19--31"
