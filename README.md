@@ -17,14 +17,19 @@ pil==8.3.1
 
 # Citation
 Accepted at the conferance proceedings of [SAI Computing Conferance, UK 2026:](https://saiconference.com/Computing)   </br>
-If you find the this method useful, please consider citing:  
->@misc{morani2023covid19,  
-      title={COVID-19 Detection Using Swin Transformer Approach from Computed Tomography Images},  
-      author={Kenan Morani},  
-      year={2023},  
-      eprint={2310.08165},  
-      archivePrefix={arXiv},  
-      primaryClass={eess.IV}  
-}
+If you find the this method useful, please consider citing: 
+@InProceedings{10.1007/978-3-032-24810-7_2,
+author="Morani, Kenan
+and Ayana, Esra Kaya
+and Kollias, Dimitrios
+and Unay, Devrim",
+editor="Arai, Kohei
+and Lorenz, Pascal",
+title="Mobile-Friendly Solution for COVID-19 Detection from Computed Tomography Images",
+booktitle="Intelligent Computing",
+year="2026",
+publisher="Springer Nature Switzerland",
+address="Cham",
+pages="19--31"  
 
-Presentation is at [SAI Computing Conferance presentation Agenda, UK 2026:](https://www.youtube.com/watch?v=3j-to3l1jQw)
+https://doi.org/10.1007/978-3-032-24810-7_2
